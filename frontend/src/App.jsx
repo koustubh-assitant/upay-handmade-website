@@ -1,161 +1,190 @@
 import { useState } from 'react'
+import { Routes, Route, Link, useParams, useNavigate } from 'react-router-dom'
 import './index.css'
 
 export default function App() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [cartCount, setCartCount] = useState(0)
+  const [cartItems, setCartItems] = useState([])
 
-  const featuredProducts = [
-    { id: 1, name: 'Eco Jute Tote Bag', price: '₹450', maker: 'Nagpur Artisans', tag: 'Best Seller', img: 'https://images.unsplash.com/photo-1599570-1b0b4a0c6b0d?w=800&auto=format&fit=crop&q=80' },
-    { id: 2, name: 'Embroidered Cotton Pouch', price: '₹320', maker: 'Pune Youth Group', tag: 'Limited', img: 'https://images.unsplash.com/photo-1584917865446-1a2d6c8d7b95?w=800&auto=format&fit=crop&q=80' },
-    { id: 3, name: 'Woven Bamboo Clutch', price: '₹580', maker: 'Maharashtra Craft', tag: 'New', img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format&fit=crop&q=80' },
-  ]
+  const addToCart = (product) => {
+    setCartCount(prev => prev + 1)
+    setCartItems(prev => [...prev, product])
+    alert(`${product.name} added to cart! 🛒`) // Simple toast
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      {/* Navbar */}
+      {/* Navbar with Cart Count */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-gray-200/50 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
-          <div className="text-3xl font-extrabold text-emerald-800">
+          <Link to="/" className="text-3xl font-extrabold text-emerald-800">
             UPAY<span className="text-emerald-600">Handmade</span>
-          </div>
+          </Link>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-10">
-            {['Home', 'Shop', 'Stories', 'Impact', 'Contact'].map(item => (
-              <a key={item} href="#" className="text-gray-700 hover:text-emerald-700 font-medium transition-colors duration-300 relative group">
-                {item}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-emerald-600 group-hover:w-full transition-all duration-300"></span>
-              </a>
-            ))}
-          </div>
-
-          {/* Mobile Hamburger */}
-          <button 
-            className="md:hidden text-3xl text-emerald-800 focus:outline-none"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? '✕' : '☰'}
-          </button>
-        </div>
-
-        {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden bg-white border-t border-gray-200 animate-fade-in">
-            <div className="px-6 py-8 flex flex-col space-y-6 text-center text-lg font-medium">
-              {['Home', 'Shop', 'Stories', 'Impact', 'Contact'].map(item => (
-                <a key={item} href="#" className="text-gray-800 hover:text-emerald-700 transition-colors" onClick={() => setMobileMenuOpen(false)}>
-                  {item}
-                </a>
-              ))}
+          <div className="flex items-center space-x-10">
+            <Link to="/" className="text-gray-700 hover:text-emerald-700 font-medium transition-colors">
+              Home
+            </Link>
+            <Link to="/shop" className="text-gray-700 hover:text-emerald-700 font-medium transition-colors">
+              Shop
+            </Link>
+            <div className="relative">
+              <button className="text-gray-700 hover:text-emerald-700 font-medium transition-colors flex items-center">
+                Cart
+                <span className="ml-2 bg-emerald-600 text-white text-xs font-bold px-2 py-1 rounded-full">
+                  {cartCount}
+                </span>
+              </button>
             </div>
           </div>
-        )}
+        </div>
       </nav>
 
-      {/* Hero */}
-      <section className="pt-40 pb-32 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-950/95 via-emerald-900/90 to-emerald-800/85"></div>
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600')] bg-cover bg-center opacity-15"></div>
+      {/* Routes */}
+      <Routes>
+        <Route path="/" element={<Home addToCart={addToCart} />} />
+        <Route path="/product/:id" element={<ProductDetail addToCart={addToCart} />} />
+      </Routes>
 
-        <div className="relative z-10 max-w-6xl mx-auto px-6 text-center text-white">
-          <h1 className="text-6xl md:text-8xl font-black mb-8 tracking-tight drop-shadow-2xl animate-fade-in-up">
-            Crafted with Love & Purpose
-          </h1>
-          <p className="text-2xl md:text-3xl mb-12 max-w-4xl mx-auto font-light opacity-90 drop-shadow-lg animate-fade-in-up delay-200">
-            Empowering women and children through sustainable handmade art — one purchase at a time.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center animate-fade-in-up delay-300">
-            <button className="bg-white text-emerald-900 font-bold text-xl px-14 py-6 rounded-full shadow-2xl hover:shadow-3xl hover:bg-gray-50 transform hover:scale-105 transition-all duration-400">
-              Shop Now
-            </button>
-            <button className="border-2 border-white/80 text-white font-bold text-xl px-14 py-6 rounded-full hover:bg-white/10 backdrop-blur-sm transition-all duration-400">
-              Our Stories
-            </button>
-          </div>
+      {/* Footer */}
+      <footer className="bg-gray-900 text-gray-300 py-16 mt-20">
+        <div className="max-w-7xl mx-auto px-6 text-center">
+          <h3 className="text-3xl font-bold text-white mb-6">UPAY Handmade</h3>
+          <p className="text-lg mb-8">Empowering women & children through crafts</p>
+          <p className="text-sm">© {new Date().getFullYear()} UPAY NGO</p>
+        </div>
+      </footer>
+    </div>
+  )
+}
+
+// Home Page Component
+function Home({ addToCart }) {
+  const products = [
+    { id: 1, name: 'Eco Jute Tote Bag', price: '₹450', maker: 'Nagpur Artisans', tag: 'Best Seller', img: 'https://images.unsplash.com/photo-1599570-1b0b4a0c6b0d?w=800' },
+    { id: 2, name: 'Embroidered Pouch', price: '₹320', maker: 'Pune Youth', tag: 'Limited', img: 'https://images.unsplash.com/photo-1584917865446-1a2d6c8d7b95?w=800' },
+    { id: 3, name: 'Woven Bamboo Clutch', price: '₹580', maker: 'Maharashtra Craft', tag: 'New', img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800' },
+  ]
+
+  return (
+    <>
+      {/* Hero */}
+      <section className="pt-40 pb-32 bg-gradient-to-br from-emerald-900 to-emerald-700 text-white">
+        <div className="max-w-6xl mx-auto px-6 text-center">
+          <h1 className="text-6xl md:text-8xl font-black mb-8">Handmade with Purpose</h1>
+          <p className="text-2xl mb-12">Empowering lives through sustainable crafts</p>
+          <button className="bg-white text-emerald-900 font-bold text-xl px-12 py-5 rounded-full shadow-2xl hover:bg-gray-100 transform hover:scale-105 transition">
+            Explore Collection
+          </button>
         </div>
       </section>
 
       {/* Products */}
-      <section className="py-32 relative">
-        <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-5xl md:text-6xl font-black text-center mb-20 text-gray-900 tracking-tight">
-            Treasures from the Heart
-          </h2>
-
-          <div className="grid md:grid-cols-3 gap-12">
-            {featuredProducts.map(product => (
-              <div
-                key={product.id}
-                className="group relative bg-white/80 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl border border-white/30 hover:border-emerald-300/50 transition-all duration-500 hover:shadow-emerald-500/30 hover:-translate-y-8"
-              >
-                <div className="relative h-96 overflow-hidden">
-                  <img
-                    src={product.img}
-                    alt={product.name}
-                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-115"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                  {product.tag && (
-                    <div className="absolute top-5 right-5 bg-emerald-700 text-white text-sm font-bold px-5 py-2 rounded-full shadow-lg transform group-hover:scale-110 transition">
-                      {product.tag}
-                    </div>
-                  )}
-                </div>
-
-                <div className="p-8">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-emerald-700 transition-colors">
+      <section className="py-24 max-w-7xl mx-auto px-6">
+        <h2 className="text-5xl font-bold text-center mb-16 text-gray-900">Featured Products</h2>
+        <div className="grid md:grid-cols-3 gap-12">
+          {products.map(product => (
+            <Link
+              to={`/product/${product.id}`}
+              key={product.id}
+              className="group bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-4 cursor-pointer"
+            >
+              <div className="h-80 overflow-hidden">
+                <img
+                  src={product.img}
+                  alt={product.name}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+              </div>
+              <div className="p-8">
+                <div className="flex justify-between items-start mb-4">
+                  <h3 className="text-2xl font-bold text-gray-900 group-hover:text-emerald-700 transition-colors">
                     {product.name}
                   </h3>
-                  <p className="text-gray-600 mb-6 text-lg">
-                    {product.maker}
-                  </p>
-                  <div className="flex justify-between items-center">
-                    <span className="text-4xl font-extrabold text-emerald-700 drop-shadow">
-                      {product.price}
-                    </span>
-                    <button className="bg-emerald-600 text-white px-8 py-4 rounded-full font-semibold hover:bg-emerald-700 transition transform hover:scale-110 shadow-lg">
-                      Add to Cart
-                    </button>
-                  </div>
+                  <span className="bg-emerald-100 text-emerald-800 text-sm font-semibold px-3 py-1 rounded-full">
+                    {product.tag}
+                  </span>
+                </div>
+                <p className="text-gray-600 mb-6">{product.maker}</p>
+                <div className="flex justify-between items-center">
+                  <span className="text-3xl font-bold text-emerald-700">{product.price}</span>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault() // prevent navigation
+                      addToCart(product)
+                    }}
+                    className="bg-emerald-600 text-white px-6 py-3 rounded-full hover:bg-emerald-700 transition"
+                  >
+                    Add to Cart
+                  </button>
                 </div>
               </div>
-            ))}
-          </div>
+            </Link>
+          ))}
         </div>
       </section>
+    </>
+  )
+}
 
-      {/* Impact CTA */}
-      <section className="py-32 bg-gradient-to-br from-emerald-50 via-white to-emerald-50">
-        <div className="max-w-5xl mx-auto px-6 text-center">
-          <h2 className="text-5xl md:text-6xl font-black text-emerald-900 mb-12">
-            Change Lives with Every Purchase
-          </h2>
-          <p className="text-2xl text-gray-700 mb-14 max-w-4xl mx-auto leading-relaxed">
-            100% of proceeds fund education, vocational training, and sustainable livelihoods for underprivileged women and children in Maharashtra.
-          </p>
-          <button className="bg-emerald-700 text-white font-bold text-2xl px-16 py-8 rounded-full shadow-2xl hover:bg-emerald-800 transform hover:scale-105 transition-all duration-400">
-            Start Supporting Today
-          </button>
-        </div>
-      </section>
+// Product Detail Page
+function ProductDetail({ addToCart }) {
+  const { id } = useParams()
+  const navigate = useNavigate()
 
-      {/* Footer */}
-      <footer className="bg-gradient-to-t from-gray-950 to-gray-900 text-gray-300 py-20">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <h3 className="text-4xl font-bold text-white mb-8 tracking-wide">UPAY Handmade</h3>
-          <p className="text-xl mb-10 max-w-3xl mx-auto opacity-90">
-            Crafting hope, dignity, and opportunity — one handmade masterpiece at a time.
-          </p>
-          <div className="flex justify-center space-x-8 mb-10">
-            <a href="#" className="text-3xl hover:text-emerald-400 transition">Instagram</a>
-            <a href="#" className="text-3xl hover:text-emerald-400 transition">Facebook</a>
-            <a href="#" className="text-3xl hover:text-emerald-400 transition">Contact</a>
+  // Fake product data (in real app, fetch from backend)
+  const product = {
+    id,
+    name: 'Eco Jute Tote Bag',
+    price: '₹450',
+    maker: 'Women artisans from Nagpur center',
+    description: 'Durable, eco-friendly jute tote with hand-stitched details. Perfect for daily use or gifting. 100% proceeds support education programs.',
+    img: 'https://images.unsplash.com/photo-1599570-1b0b4a0c6b0d?w=1200',
+    features: ['100% natural jute', 'Handcrafted', 'Spacious interior', 'Sustainable & reusable'],
+  }
+
+  return (
+    <div className="pt-24 pb-20">
+      <div className="max-w-7xl mx-auto px-6">
+        <button
+          onClick={() => navigate(-1)}
+          className="text-emerald-700 hover:text-emerald-900 font-medium mb-12 flex items-center"
+        >
+          ← Back to Home
+        </button>
+
+        <div className="grid md:grid-cols-2 gap-16">
+          <div className="rounded-3xl overflow-hidden shadow-2xl">
+            <img src={product.img} alt={product.name} className="w-full h-full object-cover" />
           </div>
-          <p className="text-sm opacity-70">
-            © {new Date().getFullYear()} UPAY NGO – Made with ❤️ in Maharashtra
-          </p>
+
+          <div className="flex flex-col justify-center">
+            <h1 className="text-5xl font-bold text-gray-900 mb-6">{product.name}</h1>
+            <p className="text-4xl font-extrabold text-emerald-700 mb-8">{product.price}</p>
+            <p className="text-gray-600 text-xl mb-10 leading-relaxed">{product.description}</p>
+
+            <div className="mb-10">
+              <h3 className="text-xl font-semibold mb-4">Features</h3>
+              <ul className="space-y-3 text-gray-700">
+                {product.features.map((feat, i) => (
+                  <li key={i} className="flex items-center">
+                    <span className="text-emerald-600 mr-3">✓</span> {feat}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <p className="text-gray-500 italic mb-12">Handcrafted by: {product.maker}</p>
+
+            <button
+              onClick={() => addToCart(product)}
+              className="bg-emerald-700 text-white font-bold text-xl px-12 py-6 rounded-full shadow-xl hover:bg-emerald-800 transform hover:scale-105 transition-all duration-300 w-full md:w-auto"
+            >
+              Add to Cart
+            </button>
+          </div>
         </div>
-      </footer>
+      </div>
     </div>
   )
 }
